@@ -13,6 +13,7 @@ usage() {
     echo "  -t, --target    DIR     Specify the target of backups (default to $DEF_TARGET)"
     echo "  -e, --exclude   FILE    Specify an exclude file (default to $DEF_EXCLUDE)"
     echo "  -f, --force-full        Forces to do a full backup"
+    echo "  -d, --dereference       Follow symlinks when using tar"
     echo "  -n, --dry-run           Outputs the commands without executing them"
     echo "  -h, --help              Display help"
     echo ""
@@ -49,6 +50,9 @@ while [ "$1" != "" ]; do
             ;;
         -f | --force-full )
             FORCE_FULL=true
+            ;;
+        -d | --dereference )
+            DEREFERENCE=true
             ;;
         -n | --dry-run )
             DRY_RUN=true
@@ -126,9 +130,15 @@ fi
 NOW=$(date +'%Y%m%d%H%M')
 BKP=$BKP_DEST/$BKP_NAME-$NOW-$BKP_STYLE.tar.gz
 
+cmd="tar"
+
 if [ $EXCLUDE ]; then
-    run_cmd "tar -X $EXCLUDE -g $SNAP -C $SOURCE -czf $BKP ."
-else
-    run_cmd "tar -g $SNAP -C $SOURCE -czf $BKP ."
+    cmd="$cmd -X $EXCLUDE"
 fi
+if [ $DEREFERENCE ]; then
+    cmd="$cmd -h"
+fi
+
+cmd="$cmd -g $SNAP -C $SOURCE -czf $BKP ."
+run_cmd "$cmd"
 

@@ -31,6 +31,7 @@ usage: ./carbon [-s SOURCE] [-t TARGET] [-e EXCLUDEFILE]
   -t, --target    DIR     Specify the target of backups (default to /media/$USER/backups)
   -e, --exclude   FILE    Specify an exclude file (default to /media/$USER/backups/excludelist)
   -f, --force-full        Forces to do a full backup
+  -d, --dereference       Follow symlinks when using tar
   -n, --dry-run           Outputs the commands without executing them
   -h, --help              Display help
 ```
